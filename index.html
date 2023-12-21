@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주기적인 처리 / window 시간차마다 실행하기</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #banner {
+            height: 0;
+            padding-top: 50%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            transition: 0.5s;
+        }
+
+        .banner .btns {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .banner .btns span {
+            display: inline-block;
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid red;
+            font-size: 0;
+            line-height: 0;
+            margin: 0 1rem;
+        }
+
+        .banner .btns span.act {
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="banner">
+        <div id="banner" class="banner red cc bbb " style="background-image: url(img/banner_0.jpg);">
+
+        </div>
+        <div class="btns"></div>
+    </section>
+    <script>
+        //    웹기능사 문제
+        //1.  3초마다 서서히 나타났다 사라지는 배너효과를 구현
+        //2.  3초마다 좌우로 슬라이드하면서 움직이는 효과
+        //3.  3초마다 위아래로 슬라이드 하면서 움직이는 효과
+        let count = 0; // 타겟번호
+        // 중요!!!!! 
+        // 프로그래밍(사직연산이 가능한)위해 모든것을 숫자화해두어한다.
+        // 변수화된 숫자란 바로 정렬을 의미함!!!!!
+
+        const contentnum = 6; // 전체개수
+        //버튼만들기
+        let btntag = "";
+        for (i = 0; i < contentnum; i++) {
+            //전체개수만큼 span태그를 만들어서
+            btntag += "<span>" + i + "</span>"
+        }
+        //버튼으로 출력하기
+        document.querySelector(".banner .btns").innerHTML = btntag;
+        //타겟번호와 동일한 span act 클래스줘서 활성화하기
+        document.querySelectorAll(".banner .btns  span")[count].classList = "act"
+        //자동롤링 함수 제작하기
+        // 1. 타겟번호의 배경출력
+        // 2. 타겟번호의 span(버튼)에 act주고 나머지 span태그들은 act삭제하기
+
+        const autocolor = () => { // 1초뒤부터 주기적으로 1초마다 실행
+            count++;
+            count %= contentnum;
+            // 1. 타겟번호의 배경출력
+            document.querySelector("#banner").style.backgroundImage = `url(img/banner_${count}.jpg)`;
+            // 2. 타겟번호의 span(버튼)에 act주고 나머지 span태그들은 act삭제하기 
+            document.querySelectorAll(".banner .btns  span").forEach((el, idx) => {
+                if (count === idx) {
+                    el.classList = "act" // 타겟번호의 span(버튼)에 act주고 
+                } else {
+                    el.classList = "" // 나머지 span태그들은 act삭제하기 
+                }
+            })
+
+        }
+        //1초마다 위의 작업을 꾸준히 실행해라
+        let autobackground = setInterval(function () { autocolor(); }, 2500);
+        //let 으로 선언하기
+        document.querySelectorAll(".banner .btns span").forEach((el, idx) => {
+            el.addEventListener('click', function () {
+                clearInterval(autobackground); //setInterval 자동롤링 멈춰
+                count = idx;
+                document.querySelectorAll(".banner .btns span").forEach((eel, iidx) => {
+                    eel.classList = ''
+                })
+                document.querySelectorAll(".banner .btns span")[count].classList = "act";
+                document.querySelector("#banner").style.backgroundImage = `url(img/banner_${count}.jpg)`;
+            })
+        })
+
+    </script>
+</body>
+
+</html>
